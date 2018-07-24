@@ -105,11 +105,24 @@
     },
 
     close: function() {
-      modals.pop();
-      this.unblock();
-      this.hide();
-      if (!$.modal.isActive())
-        $(document).off('keydown.modal');
+      if(this.options.showAltClose) {
+          this.$elm.trigger($.modal.WARN_CLOSE, [this._ctx()]);
+        }
+        else {
+          modals.pop();
+          this.unblock();
+          this.hide();
+          if (!$.modal.isActive())
+            $(document).off('keydown.modal');
+        }
+    },
+      
+    forceClose: function() {
+        modals.pop();
+        this.unblock();
+        this.hide();
+        if (!$.modal.isActive())
+          $(document).off('keydown.modal');
     },
 
     block: function() {
@@ -181,7 +194,7 @@
 
     //Return context for custom events
     _ctx: function() {
-      return { elm: this.$elm, $elm: this.$elm, $blocker: this.$blocker, options: this.options };
+      return { modal: this, elm: this.$elm, $elm: this.$elm, $blocker: this.$blocker, options: this.options };
     }
   };
 
@@ -221,6 +234,7 @@
   $.modal.BEFORE_OPEN = 'modal:before-open';
   $.modal.OPEN = 'modal:open';
   $.modal.BEFORE_CLOSE = 'modal:before-close';
+  $.modal.WARN_CLOSE = 'modal:warn-close';
   $.modal.CLOSE = 'modal:close';
   $.modal.AFTER_CLOSE = 'modal:after-close';
   $.modal.AJAX_SEND = 'modal:ajax:send';
